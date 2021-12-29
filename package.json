@@ -1,0 +1,32 @@
+{
+  "name": "catch-up",
+  "version": "1.0.0",
+  "description": "Send emails periodically every week for arranging catchup.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SakibulMowla/catch-up.git"
+  },
+  "keywords": [
+    "catchup"
+  ],
+  "author": "Sakibul Mowla",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SakibulMowla/catch-up/issues"
+  },
+  "homepage": "https://github.com/SakibulMowla/catch-up#readme",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.45.0",
+    "aws-sdk": "^2.1048.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.5.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.3",
+    "jest": "^27.4.5"
+  }
+}
