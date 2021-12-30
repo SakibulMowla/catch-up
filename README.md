@@ -1,5 +1,10 @@
 # catch-up
 
+## Prerequisite
+
+- Node.js
+- npm
+
 ## Setup
 
 - `npm install`
