@@ -29,6 +29,12 @@ class DBWrapper {
     return response;
   }
 
+  async query(params) {
+    const response = await this.dynamodb.query(params).promise();
+    console.log('query response = ', JSON.stringify(response, null, 2));
+    return response;
+  }
+
   async deleteTable(params) {
     const response = await this.dynamodb.deleteTable(params).promise();
     console.log('deleteTable response = ', JSON.stringify(response, null, 2));

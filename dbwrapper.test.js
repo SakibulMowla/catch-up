@@ -66,6 +66,20 @@ test('put elements in devcatchupusers table', async () => {
   expect(response.Count).toBe(2);
 }, 5000 + 60 * 1000);
 
+test('query devcatchupusers table', async () => {
+  const table = 'devcatchupusers';
+  const params = {
+    ExpressionAttributeValues: {
+      ':email': { S: 'sakibulmowla@gmail.com' },
+    },
+    KeyConditionExpression: 'email = :email',
+    ProjectionExpression: 'firstname',
+    TableName: table,
+  };
+  const response = await dbWrapper.query(params);
+  expect(response.Count).toBe(1);
+});
+
 test('delete devcatchupusers table', async () => {
   const table = 'devcatchupusers';
   const params = {
