@@ -12,7 +12,8 @@
 
 ## Running test
 
-- `npm test`
+- Run all tests: `npm test`
+- Run a particular test: `npx jest <testname>`
 
 ## Lint
 

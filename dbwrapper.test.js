@@ -1,9 +1,7 @@
 const DBWrapper = require('./dbwrapper');
+const delay = require('./library');
 
 const dbWrapper = new DBWrapper();
-
-// eslint-disable-next-line no-promise-executor-return
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 test('create devcatchupusers table', async () => {
   const table = 'devcatchupusers';
@@ -88,4 +86,7 @@ test('delete devcatchupusers table', async () => {
   const response = await dbWrapper.deleteTable(params);
   expect(response.TableDescription.TableName).toBe(table);
   expect(response.TableDescription.TableStatus).toBe('DELETING');
-});
+
+  // wait for db deletion to finish
+  await delay(60 * 1000);
+}, 5000 + 60 * 1000);

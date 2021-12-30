@@ -4,7 +4,7 @@
   "description": "Send emails periodically every week for arranging catchup.",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --runInBand"
   },
   "repository": {
     "type": "git",
