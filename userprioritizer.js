@@ -10,7 +10,7 @@ const UserTable = 'catchupusers';
 const MeetingTable = 'catchupmeetings';
 const DevPrefix = 'dev';
 
-function getUsersSortedByLastMeetingDate(allUsersWithTimestamp) {
+function getUsersSortedByLastMeetingTimestamp(allUsersWithTimestamp) {
   const compareTimestamp = (item1, item2) => {
     const a = item1.timestamp;
     const b = item2.timestamp;
@@ -66,7 +66,7 @@ class UserPrioritizer {
     }));
   }
 
-  async getOrderedListOfUsers(tier = 'prod') {
+  async getOrderedListOfUsers(tier = 'dev') {
     const scanParams = {
       TableName: (tier === 'dev' ? DevPrefix : '') + UserTable,
       ProjectionExpression: 'email, firstname, lastname',
@@ -78,7 +78,9 @@ class UserPrioritizer {
     const allUsersWithTimestamp = await this.getUsersWithLastMeetingDate(allUsers, tier);
     console.log('allUsersWithTimestamp = ', JSON.stringify(allUsersWithTimestamp, null, 2));
 
-    const allUsersortedByLastMeetingDate = getUsersSortedByLastMeetingDate(allUsersWithTimestamp);
+    const allUsersortedByLastMeetingDate = getUsersSortedByLastMeetingTimestamp(
+      allUsersWithTimestamp,
+    );
     console.log('allUsersortedByLastMeetingDate = ', JSON.stringify(allUsersortedByLastMeetingDate, null, 2));
 
     return allUsersortedByLastMeetingDate;
