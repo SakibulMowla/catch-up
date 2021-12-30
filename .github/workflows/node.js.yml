@@ -8,10 +8,8 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 on:
-  push:
-    branches: []
   pull_request:
-    branches: []
+    branches: [ main ]
 
 jobs:
   build:
