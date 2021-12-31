@@ -1,8 +1,7 @@
-const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS } = require('./constants');
-const DBWrapper = require('./dbwrapper');
-const delay = require('./library');
-const Matcher = require('./matcher');
-const UserPrioritizer = require('./userprioritizer');
+const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS } = require('../src/constants');
+const DBWrapper = require('../src/dbwrapper');
+const delay = require('../src/utility');
+const UserPrioritizer = require('../src/userprioritizer');
 
 const dbWrapper = new DBWrapper();
 const userPrioritizer = new UserPrioritizer();
@@ -100,10 +99,9 @@ afterAll(async () => {
   await delay(DB_SETUP_WAIT_TIME_MS);
 }, JEST_DEFAULT_TIMEOUT_MS + DB_SETUP_WAIT_TIME_MS);
 
-test('xxxxxxxs', async () => {
+test('user with no previous meeting should be on top of priority list', async () => {
   const dec31st2021DateString = new Date(2021, 12, 31).toISOString();
   const dec21st2021DateString = new Date(2021, 12, 21).toISOString();
-
   const batchWriteParamsForPutting = {
     RequestItems: {
       devcatchupmeetings: [
@@ -111,29 +109,9 @@ test('xxxxxxxs', async () => {
           PutRequest: {
             Item: {
               KEY: { S: 'email1' },
-              email1: { S: 'masum.nayeem@gmail.com' },
-              email2: { S: 'biswajit.sust@gmail.com' },
-              timestamp: { S: dec31st2021DateString },
-            },
-          },
-        },
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email1' },
-              email1: { S: 'biswajit.sust@gmail.com' },
-              email2: { S: 'masum.nayeem@gmail.com' },
-              timestamp: { S: dec31st2021DateString },
-            },
-          },
-        },
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email1' },
               email1: { S: 'sakibulmowla@gmail.com' },
               email2: { S: 'biswajit.sust@gmail.com' },
-              timestamp: { S: dec21st2021DateString },
+              timestamp: { S: dec31st2021DateString },
             },
           },
         },
@@ -153,41 +131,46 @@ test('xxxxxxxs', async () => {
   await dbWrapper.batchWriteItem(batchWriteParamsForPutting);
 
   const orderedUserList = await userPrioritizer.getOrderedListOfUsers('dev');
-  const matcher = new Matcher(orderedUserList);
 
-  const preferenceListOfSakibul = await matcher.getPreferenceList(
-    {
-      firstname: 'Sakibul',
-      lastname: 'Mowla',
-      email: 'sakibulmowla@gmail.com',
-      timestamp: dec21st2021DateString,
+  expect(orderedUserList.length).toBe(3);
+  expect(orderedUserList[0].email).toBe('masum.nayeem@gmail.com');
+});
+
+test('users should be prioritized in latemost last meeting order', async () => {
+  const dec22nd2021DateString = new Date(2021, 12, 22).toISOString();
+  const dec11th2021DateString = new Date(2021, 12, 11).toISOString();
+  const batchWriteParamsForPutting = {
+    RequestItems: {
+      devcatchupmeetings: [
+        {
+          PutRequest: {
+            Item: {
+              KEY: { S: 'email1' },
+              email1: { S: 'masum.nayeem@gmail.com' },
+              email2: { S: 'sakibulmowla@gmail.com' },
+              timestamp: { S: dec22nd2021DateString },
+            },
+          },
+        },
+        {
+          PutRequest: {
+            Item: {
+              KEY: { S: 'email1' },
+              email1: { S: 'sakibulmowla@gmail.com' },
+              email2: { S: 'biswajit.sust@gmail.com' },
+              timestamp: { S: dec11th2021DateString },
+            },
+          },
+        },
+      ],
     },
-    'dev',
-  );
-  expect(preferenceListOfSakibul).toStrictEqual([
-    'masum.nayeem@gmail.com',
-    'biswajit.sust@gmail.com',
-  ]);
+  };
+  await dbWrapper.batchWriteItem(batchWriteParamsForPutting);
 
-  const preferenceListOfBiswajit = await matcher.getPreferenceList(
-    {
-      firstname: 'Biswajit',
-      lastname: 'Debnath',
-      email: 'biswajit.sust@gmail.com',
-      timestamp: dec31st2021DateString,
-    },
-    'dev',
-  );
-  expect(preferenceListOfBiswajit).toStrictEqual([
-    'sakibulmowla@gmail.com',
-    'masum.nayeem@gmail.com',
-  ]);
+  const orderedUserList = await userPrioritizer.getOrderedListOfUsers('dev');
 
-  const matchedGroups = await matcher.getMatchedGroups('dev');
-  expect(matchedGroups).toStrictEqual([
-    [
-      'sakibulmowla@gmail.com',
-      'masum.nayeem@gmail.com',
-    ],
-  ]);
+  expect(orderedUserList.length).toBe(3);
+  expect(orderedUserList[0].email).toBe('biswajit.sust@gmail.com');
+  expect(orderedUserList[1].email).toBe('masum.nayeem@gmail.com');
+  expect(orderedUserList[2].email).toBe('sakibulmowla@gmail.com');
 });

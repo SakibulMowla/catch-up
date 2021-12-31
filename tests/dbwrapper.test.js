@@ -1,6 +1,6 @@
-const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS } = require('./constants');
-const DBWrapper = require('./dbwrapper');
-const delay = require('./library');
+const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS } = require('../src/constants');
+const DBWrapper = require('../src/dbwrapper');
+const delay = require('../src/utility');
 
 const dbWrapper = new DBWrapper();
 
