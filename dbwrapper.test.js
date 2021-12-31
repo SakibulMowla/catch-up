@@ -1,3 +1,4 @@
+const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS } = require('./constants');
 const DBWrapper = require('./dbwrapper');
 const delay = require('./library');
 
@@ -25,7 +26,7 @@ test('create devcatchupusers table', async () => {
 
 test('put elements in devcatchupusers table', async () => {
   // wait for db setup to finish
-  await delay(60 * 1000);
+  await delay(DB_SETUP_WAIT_TIME_MS);
 
   const batchWriteParams = {
     RequestItems: {
@@ -62,7 +63,7 @@ test('put elements in devcatchupusers table', async () => {
   const response = await dbWrapper.scan(scanParams);
 
   expect(response.Count).toBe(2);
-}, 5000 + 60 * 1000);
+}, JEST_DEFAULT_TIMEOUT_MS + DB_SETUP_WAIT_TIME_MS);
 
 test('query devcatchupusers table', async () => {
   const table = 'devcatchupusers';
@@ -88,5 +89,5 @@ test('delete devcatchupusers table', async () => {
   expect(response.TableDescription.TableStatus).toBe('DELETING');
 
   // wait for db deletion to finish
-  await delay(60 * 1000);
-}, 5000 + 60 * 1000);
+  await delay(DB_SETUP_WAIT_TIME_MS);
+}, JEST_DEFAULT_TIMEOUT_MS + DB_SETUP_WAIT_TIME_MS);

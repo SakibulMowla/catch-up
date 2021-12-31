@@ -1,3 +1,4 @@
+const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS } = require('./constants');
 const DBWrapper = require('./dbwrapper');
 const delay = require('./library');
 const Matcher = require('./matcher');
@@ -43,7 +44,7 @@ beforeAll(async () => {
   await dbWrapper.createTable(meetingTableParams);
 
   // wait for db setup to finish
-  await delay(60 * 1000);
+  await delay(DB_SETUP_WAIT_TIME_MS);
 
   const batchWriteParams = {
     RequestItems: {
@@ -82,7 +83,7 @@ beforeAll(async () => {
     },
   };
   await dbWrapper.batchWriteItem(batchWriteParams);
-}, 5000 + 60 * 1000);
+}, JEST_DEFAULT_TIMEOUT_MS + DB_SETUP_WAIT_TIME_MS);
 
 afterAll(async () => {
   const userTableParams = {
@@ -96,8 +97,8 @@ afterAll(async () => {
   await dbWrapper.deleteTable(meetingTableParams);
 
   // wait for db deletion to finish
-  await delay(60 * 1000);
-}, 5000 + 60 * 1000);
+  await delay(DB_SETUP_WAIT_TIME_MS);
+}, JEST_DEFAULT_TIMEOUT_MS + DB_SETUP_WAIT_TIME_MS);
 
 test('xxxxxxxs', async () => {
   const dec31st2021DateString = new Date(2021, 12, 31).toISOString();
