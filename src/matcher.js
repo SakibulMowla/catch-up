@@ -1,13 +1,11 @@
 const AWS = require('aws-sdk');
 const DBWrapper = require('./dbwrapper');
+const { TABLE } = require('./constants');
 
 AWS.config.update({
   endpoint: 'https://dynamodb.us-west-2.amazonaws.com',
   region: 'us-west-2',
 });
-
-const MeetingTable = 'catchupmeetings';
-const DevPrefix = 'dev';
 
 class Matcher {
   constructor(orderedAllUserList) {
@@ -31,7 +29,7 @@ class Matcher {
       Limit: this.totalUsers - 1,
       ProjectionExpression: 'email2, #timestamp',
       ScanIndexForward: false,
-      TableName: (tier === 'dev' ? DevPrefix : '') + MeetingTable,
+      TableName: TABLE.MEETINGS[tier],
     };
 
     const response = await this.dbWrapper.query(params);

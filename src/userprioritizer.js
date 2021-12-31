@@ -1,14 +1,11 @@
 const AWS = require('aws-sdk');
+const { TABLE } = require('./constants');
 const DBWrapper = require('./dbwrapper');
 
 AWS.config.update({
   endpoint: 'https://dynamodb.us-west-2.amazonaws.com',
   region: 'us-west-2',
 });
-
-const UserTable = 'catchupusers';
-const MeetingTable = 'catchupmeetings';
-const DevPrefix = 'dev';
 
 function getUsersSortedByLastMeetingTimestamp(allUsersWithTimestamp) {
   const compareTimestamp = (item1, item2) => {
@@ -55,7 +52,7 @@ class UserPrioritizer {
         Limit: 1,
         ProjectionExpression: 'email1, #timestamp',
         ScanIndexForward: false,
-        TableName: (tier === 'dev' ? DevPrefix : '') + MeetingTable,
+        TableName: TABLE.MEETINGS[tier],
       };
       const response = await this.dbWrapper.query(params);
       console.log('User = ', JSON.stringify(user, null, 2));
@@ -71,7 +68,7 @@ class UserPrioritizer {
   async getOrderedListOfUsers(tier = 'dev') {
     const scanParams = {
       ProjectionExpression: 'email, firstname, lastname',
-      TableName: (tier === 'dev' ? DevPrefix : '') + UserTable,
+      TableName: TABLE.USERS[tier],
     };
 
     const allUsers = await this.dbWrapper.scan(scanParams);

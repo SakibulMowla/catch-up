@@ -1,11 +1,10 @@
-const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS } = require('../src/constants');
+const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS, TABLE } = require('../src/constants');
 const DBWrapper = require('../src/dbwrapper');
 const delay = require('../src/utility');
 
 const dbWrapper = new DBWrapper();
 
 test('create devcatchupusers table', async () => {
-  const table = 'devcatchupusers';
   const params = {
     AttributeDefinitions: [
       { AttributeName: 'email', AttributeType: 'S' },
@@ -17,10 +16,10 @@ test('create devcatchupusers table', async () => {
       ReadCapacityUnits: 10,
       WriteCapacityUnits: 10,
     },
-    TableName: table,
+    TableName: TABLE.USERS.dev,
   };
   const response = await dbWrapper.createTable(params);
-  expect(response.TableDescription.TableName).toBe(table);
+  expect(response.TableDescription.TableName).toBe(TABLE.USERS.dev);
   expect(response.TableDescription.TableStatus).toBe('CREATING');
 });
 
@@ -30,7 +29,7 @@ test('put elements in devcatchupusers table', async () => {
 
   const batchWriteParams = {
     RequestItems: {
-      devcatchupusers: [
+      [TABLE.USERS.dev]: [
         {
           PutRequest: {
             Item: {
@@ -58,7 +57,7 @@ test('put elements in devcatchupusers table', async () => {
 
   const scanParams = {
     ProjectionExpression: 'email, firstname, lastname',
-    TableName: 'devcatchupusers',
+    TableName: TABLE.USERS.dev,
   };
   const response = await dbWrapper.scan(scanParams);
 
@@ -66,26 +65,24 @@ test('put elements in devcatchupusers table', async () => {
 }, JEST_DEFAULT_TIMEOUT_MS + DB_SETUP_WAIT_TIME_MS);
 
 test('query devcatchupusers table', async () => {
-  const table = 'devcatchupusers';
   const params = {
     ExpressionAttributeValues: {
       ':email': { S: 'sakibulmowla@gmail.com' },
     },
     KeyConditionExpression: 'email = :email',
     ProjectionExpression: 'firstname',
-    TableName: table,
+    TableName: TABLE.USERS.dev,
   };
   const response = await dbWrapper.query(params);
   expect(response.Count).toBe(1);
 });
 
 test('delete devcatchupusers table', async () => {
-  const table = 'devcatchupusers';
   const params = {
-    TableName: table,
+    TableName: TABLE.USERS.dev,
   };
   const response = await dbWrapper.deleteTable(params);
-  expect(response.TableDescription.TableName).toBe(table);
+  expect(response.TableDescription.TableName).toBe(TABLE.USERS.dev);
   expect(response.TableDescription.TableStatus).toBe('DELETING');
 
   // wait for db deletion to finish
