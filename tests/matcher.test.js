@@ -12,34 +12,51 @@ const MeetingTable = 'devcatchupmeetings';
 
 beforeAll(async () => {
   const userTableParams = {
-    TableName: UserTable,
-    KeySchema: [
-      { AttributeName: 'email', KeyType: 'HASH' }, // Partition key
-    ],
     AttributeDefinitions: [
-      { AttributeName: 'email', AttributeType: 'S' },
+      {
+        AttributeName: 'email',
+        AttributeType: 'S',
+      },
+    ],
+    KeySchema: [
+      {
+        AttributeName: 'email',
+        KeyType: 'HASH',
+      },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 10,
       WriteCapacityUnits: 10,
     },
+    TableName: UserTable,
   };
   await dbWrapper.createTable(userTableParams);
 
   const meetingTableParams = {
-    TableName: MeetingTable,
-    KeySchema: [
-      { AttributeName: 'email1', KeyType: 'HASH' }, // Partition key
-      { AttributeName: 'timestamp', KeyType: 'RANGE' }, // //Sort key
-    ],
     AttributeDefinitions: [
-      { AttributeName: 'email1', AttributeType: 'S' },
-      { AttributeName: 'timestamp', AttributeType: 'S' },
+      {
+        AttributeName: 'email1',
+        AttributeType: 'S',
+      }, {
+        AttributeName: 'timestamp',
+        AttributeType: 'S',
+      },
+    ],
+    KeySchema: [
+      {
+        AttributeName: 'email1',
+        KeyType: 'HASH',
+      }, // Partition key
+      {
+        AttributeName: 'timestamp',
+        KeyType: 'RANGE',
+      },
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 10,
       WriteCapacityUnits: 10,
     },
+    TableName: MeetingTable,
   };
   await dbWrapper.createTable(meetingTableParams);
 
@@ -157,9 +174,9 @@ test('xxxxxxxs', async () => {
 
   const preferenceListOfSakibul = await matcher.getPreferenceList(
     {
+      email: 'sakibulmowla@gmail.com',
       firstname: 'Sakibul',
       lastname: 'Mowla',
-      email: 'sakibulmowla@gmail.com',
       timestamp: dec21st2021DateString,
     },
     'dev',
@@ -171,9 +188,9 @@ test('xxxxxxxs', async () => {
 
   const preferenceListOfBiswajit = await matcher.getPreferenceList(
     {
+      email: 'biswajit.sust@gmail.com',
       firstname: 'Biswajit',
       lastname: 'Debnath',
-      email: 'biswajit.sust@gmail.com',
       timestamp: dec31st2021DateString,
     },
     'dev',

@@ -12,5 +12,6 @@
         "ecmaVersion": 13
     },
     "rules": {
+        "sort-keys": ["error", "asc", {"caseSensitive": true, "natural": false, "minKeys": 2}]
     }
 }

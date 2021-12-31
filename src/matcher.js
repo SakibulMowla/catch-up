@@ -2,8 +2,8 @@ const AWS = require('aws-sdk');
 const DBWrapper = require('./dbwrapper');
 
 AWS.config.update({
-  region: 'us-west-2',
   endpoint: 'https://dynamodb.us-west-2.amazonaws.com',
+  region: 'us-west-2',
 });
 
 const MeetingTable = 'catchupmeetings';
@@ -19,17 +19,19 @@ class Matcher {
 
   async getPreferenceList(user, tier = 'dev') {
     const params = {
-      ExpressionAttributeValues: {
-        ':email1': { S: user.email },
-      },
-      KeyConditionExpression: 'email1 = :email1',
-      ProjectionExpression: 'email2, #timestamp',
       ExpressionAttributeNames: {
         '#timestamp': 'timestamp',
       },
-      TableName: (tier === 'dev' ? DevPrefix : '') + MeetingTable,
-      ScanIndexForward: false,
+      ExpressionAttributeValues: {
+        ':email1': {
+          S: user.email,
+        },
+      },
+      KeyConditionExpression: 'email1 = :email1',
       Limit: this.totalUsers - 1,
+      ProjectionExpression: 'email2, #timestamp',
+      ScanIndexForward: false,
+      TableName: (tier === 'dev' ? DevPrefix : '') + MeetingTable,
     };
 
     const response = await this.dbWrapper.query(params);

@@ -7,17 +7,17 @@ const dbWrapper = new DBWrapper();
 test('create devcatchupusers table', async () => {
   const table = 'devcatchupusers';
   const params = {
-    TableName: table,
-    KeySchema: [
-      { AttributeName: 'email', KeyType: 'HASH' }, // Partition key
-    ],
     AttributeDefinitions: [
       { AttributeName: 'email', AttributeType: 'S' },
+    ],
+    KeySchema: [
+      { AttributeName: 'email', KeyType: 'HASH' }, // Partition key
     ],
     ProvisionedThroughput: {
       ReadCapacityUnits: 10,
       WriteCapacityUnits: 10,
     },
+    TableName: table,
   };
   const response = await dbWrapper.createTable(params);
   expect(response.TableDescription.TableName).toBe(table);
@@ -57,8 +57,8 @@ test('put elements in devcatchupusers table', async () => {
   await dbWrapper.batchWriteItem(batchWriteParams);
 
   const scanParams = {
-    TableName: 'devcatchupusers',
     ProjectionExpression: 'email, firstname, lastname',
+    TableName: 'devcatchupusers',
   };
   const response = await dbWrapper.scan(scanParams);
 

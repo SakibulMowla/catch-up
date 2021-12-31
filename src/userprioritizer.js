@@ -2,8 +2,8 @@ const AWS = require('aws-sdk');
 const DBWrapper = require('./dbwrapper');
 
 AWS.config.update({
-  region: 'us-west-2',
   endpoint: 'https://dynamodb.us-west-2.amazonaws.com',
+  region: 'us-west-2',
 });
 
 const UserTable = 'catchupusers';
@@ -43,17 +43,19 @@ class UserPrioritizer {
   async getUsersWithLastMeetingDate(allUsers, tier = 'prod') {
     return Promise.all(allUsers.Items.map(async (user) => {
       const params = {
-        ExpressionAttributeValues: {
-          ':email1': { S: user.email },
-        },
-        KeyConditionExpression: 'email1 = :email1',
-        ProjectionExpression: 'email1, #timestamp',
         ExpressionAttributeNames: {
           '#timestamp': 'timestamp',
         },
-        TableName: (tier === 'dev' ? DevPrefix : '') + MeetingTable,
-        ScanIndexForward: false,
+        ExpressionAttributeValues: {
+          ':email1': {
+            S: user.email,
+          },
+        },
+        KeyConditionExpression: 'email1 = :email1',
         Limit: 1,
+        ProjectionExpression: 'email1, #timestamp',
+        ScanIndexForward: false,
+        TableName: (tier === 'dev' ? DevPrefix : '') + MeetingTable,
       };
       const response = await this.dbWrapper.query(params);
       console.log('User = ', JSON.stringify(user, null, 2));
@@ -68,8 +70,8 @@ class UserPrioritizer {
 
   async getOrderedListOfUsers(tier = 'dev') {
     const scanParams = {
-      TableName: (tier === 'dev' ? DevPrefix : '') + UserTable,
       ProjectionExpression: 'email, firstname, lastname',
+      TableName: (tier === 'dev' ? DevPrefix : '') + UserTable,
     };
 
     const allUsers = await this.dbWrapper.scan(scanParams);
