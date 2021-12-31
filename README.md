@@ -17,5 +17,5 @@
 
 ## Lint
 
-- check lint error: `npx eslint .`
-- autofix lint error: `npm eslint . --fix`
+- check lint error: `npm run lint`
+- autofix lint error: `npm run lint-fix`
