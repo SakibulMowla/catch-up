@@ -1,4 +1,4 @@
-const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS } = require('../src/constants');
+const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS, TABLE } = require('../src/constants');
 const DBWrapper = require('../src/dbwrapper');
 const delay = require('../src/utility');
 const Matcher = require('../src/matcher');
@@ -6,9 +6,6 @@ const UserPrioritizer = require('../src/userprioritizer');
 
 const dbWrapper = new DBWrapper();
 const userPrioritizer = new UserPrioritizer();
-
-const UserTable = 'devcatchupusers';
-const MeetingTable = 'devcatchupmeetings';
 
 beforeAll(async () => {
   const userTableParams = {
@@ -28,7 +25,7 @@ beforeAll(async () => {
       ReadCapacityUnits: 10,
       WriteCapacityUnits: 10,
     },
-    TableName: UserTable,
+    TableName: TABLE.USERS.dev,
   };
   await dbWrapper.createTable(userTableParams);
 
@@ -56,7 +53,7 @@ beforeAll(async () => {
       ReadCapacityUnits: 10,
       WriteCapacityUnits: 10,
     },
-    TableName: MeetingTable,
+    TableName: TABLE.MEETINGS.dev,
   };
   await dbWrapper.createTable(meetingTableParams);
 
@@ -104,12 +101,12 @@ beforeAll(async () => {
 
 afterAll(async () => {
   const userTableParams = {
-    TableName: UserTable,
+    TableName: TABLE.USERS.dev,
   };
   await dbWrapper.deleteTable(userTableParams);
 
   const meetingTableParams = {
-    TableName: MeetingTable,
+    TableName: TABLE.MEETINGS.dev,
   };
   await dbWrapper.deleteTable(meetingTableParams);
 
