@@ -117,7 +117,7 @@ afterAll(async () => {
   await delay(DB_SETUP_WAIT_TIME_MS);
 }, JEST_DEFAULT_TIMEOUT_MS + DB_SETUP_WAIT_TIME_MS);
 
-test('xxxxxxxs', async () => {
+test('user with latemost recent meeting should be priotitized', async () => {
   const dec31st2021DateString = new Date(2021, 12, 31).toISOString();
   const dec21st2021DateString = new Date(2021, 12, 21).toISOString();
 

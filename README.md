@@ -7,8 +7,9 @@
 
 ## Setup
 
+- Clone the repo
 - `npm install`
-- `npm install aws-sdk`
+- Setup the aws credentials as environment variables
 
 ## Running test
 
