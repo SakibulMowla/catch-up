@@ -62,7 +62,7 @@ beforeAll(async () => {
 
   const batchWriteParams = {
     RequestItems: {
-      devcatchupusers: [
+      [TABLE.USERS.dev]: [
         {
           PutRequest: {
             Item: {
@@ -120,7 +120,7 @@ test('user with latemost recent meeting should be priotitized', async () => {
 
   const batchWriteParamsForPutting = {
     RequestItems: {
-      devcatchupmeetings: [
+      [TABLE.MEETINGS.dev]: [
         {
           PutRequest: {
             Item: {
