@@ -12,8 +12,6 @@ const DevPrefix = 'dev';
 class Matcher {
   constructor(orderedAllUserList) {
     this.dbWrapper = new DBWrapper();
-    this.dynamodb = new AWS.DynamoDB();
-    this.docClient = new AWS.DynamoDB.DocumentClient();
     this.assignedUsers = new Set();
     this.orderedAllUserList = orderedAllUserList;
     this.totalUsers = this.orderedAllUserList.length;
