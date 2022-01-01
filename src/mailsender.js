@@ -1,9 +1,9 @@
 const fs = require('fs');
+const axios = require('axios');
 const { ADMIN } = require('./constants');
 
 class MailSender {
-  constructor({ mailjet, tier = 'dev' }) {
-    this.mailjet = mailjet;
+  constructor(tier = 'dev') {
     this.tier = tier;
     this.emailTemplate = JSON.parse(fs.readFileSync('emailtemplate.json', 'utf8'));
     this.emailSubject = this.emailTemplate.subject;
@@ -22,30 +22,34 @@ class MailSender {
       .replace('{person_2_name}', userBFullname)
       .replace('{host_email_address}', ADMIN.EMAIL);
 
-    const request = this.mailjet
-      .post('send', { version: 'v3.1' })
-      .request({
-        Messages: [
-          {
-            From: {
-              Email: ADMIN.EMAIL,
-              Name: ADMIN.FULLNAME,
-            },
-            Subject: this.tier === 'dev' ? 'Ignore: Testing Catchup Email' : this.emailSubject,
-            TextPart: emailBody,
-            To: [
-              {
-                Email: userA.email,
-                Name: userAFullname,
-              },
-              {
-                Email: userB.email,
-                Name: userBFullname,
-              },
-            ],
+    const request = axios.post('send', {
+      Messages: [
+        {
+          From: {
+            Email: ADMIN.EMAIL,
+            Name: ADMIN.FULLNAME,
           },
-        ],
-      });
+          Subject: this.tier === 'dev' ? 'Ignore: Testing Catchup Email' : this.emailSubject,
+          TextPart: emailBody,
+          To: [
+            {
+              Email: userA.email,
+              Name: userAFullname,
+            },
+            {
+              Email: userB.email,
+              Name: userBFullname,
+            },
+          ],
+        },
+      ],
+    }, {
+      auth: {
+        password: process.env.MJ_APIKEY_PRIVATE,
+        username: process.env.MJ_APIKEY_PUBLIC,
+      },
+      baseURL: 'https://api.mailjet.com/v3.1/',
+    });
     return request;
   }
 }

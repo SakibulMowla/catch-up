@@ -1,16 +1,12 @@
+const axios = require('axios');
 const MailSender = require('../src/mailsender');
 
 test('email seding successful', async () => {
   const successMessage = 'email sending successful! :)';
-  const requestMock = jest.fn(() => Promise.resolve({ body: successMessage }));
-  const mailjet = {
-    post: () => (
-      {
-        request: requestMock,
-      }
-    ),
-  };
-  const mainSender = new MailSender({ mailjet, tier: 'dev' });
+  const mockPostResponse = jest.fn(() => Promise.resolve({ body: successMessage }));
+  axios.post.mockImplementation(mockPostResponse);
+
+  const mainSender = new MailSender('dev');
   const response = await mainSender.sendMail(
     {
       email: 'sakibulmowla@gmail.com',
@@ -23,21 +19,15 @@ test('email seding successful', async () => {
       lastname: 'Anothermowla',
     },
   );
+  expect(mockPostResponse).toHaveBeenCalled();
   expect(response.body).toBe(successMessage);
-  expect(requestMock.mock.calls.length).toBe(1);
 });
 
-test('mailjet is not called when userB is invalid', async () => {
-  const successMessage = 'email sending successful! :)';
-  const requestMock = jest.fn(() => Promise.resolve({ body: successMessage }));
-  const mailjet = {
-    post: () => (
-      {
-        request: requestMock,
-      }
-    ),
-  };
-  const mainSender = new MailSender({ mailjet, tier: 'dev' });
+test('axios is not called when userB is invalid', async () => {
+  const mockPostResponse = jest.fn(() => {});
+  axios.post.mockImplementation(mockPostResponse);
+
+  const mainSender = new MailSender('dev');
   try {
     await mainSender.sendMail(
       {
@@ -47,6 +37,6 @@ test('mailjet is not called when userB is invalid', async () => {
       },
     );
   } catch (e) {
-    expect(requestMock.mock.calls.length).toBe(0);
+    expect(mockPostResponse).not.toHaveBeenCalled();
   }
 });

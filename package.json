@@ -24,7 +24,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.45.0",
     "aws-sdk": "^2.1048.0",
-    "node-mailjet": "^3.0.5"
+    "axios": "^0.24.0"
   },
   "devDependencies": {
     "eslint": "^8.5.0",
