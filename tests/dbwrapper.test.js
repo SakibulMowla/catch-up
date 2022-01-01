@@ -86,5 +86,5 @@ test('delete devcatchupusers table', async () => {
   expect(response.TableDescription.TableStatus).toBe('DELETING');
 
   // wait for db deletion to finish
-  await delay(DB_SETUP_WAIT_TIME_S);
+  await delay(DB_SETUP_WAIT_TIME_MS);
 }, JEST_DEFAULT_TIMEOUT_MS + DB_SETUP_WAIT_TIME_MS);
