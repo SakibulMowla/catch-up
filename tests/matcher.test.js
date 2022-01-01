@@ -5,7 +5,6 @@ const Matcher = require('../src/matcher');
 const UserPrioritizer = require('../src/userprioritizer');
 
 const dbWrapper = new DBWrapper();
-const userPrioritizer = new UserPrioritizer();
 
 beforeAll(async () => {
   const userTableParams = {
@@ -166,6 +165,15 @@ test('user with latemost recent meeting should be priotitized', async () => {
   };
   await dbWrapper.batchWriteItem(batchWriteParamsForPutting);
 
+  const scanParams = {
+    ProjectionExpression: 'email, firstname, lastname',
+    TableName: TABLE.USERS.dev,
+  };
+
+  const allUsers = await dbWrapper.scan(scanParams);
+  console.log('allUsers = ', JSON.stringify(allUsers, null, 2));
+
+  const userPrioritizer = new UserPrioritizer(allUsers);
   const orderedUserList = await userPrioritizer.getOrderedListOfUsers('dev');
   const matcher = new Matcher(orderedUserList);
 
