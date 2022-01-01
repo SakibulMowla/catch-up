@@ -31,14 +31,13 @@ function getUsersSortedByLastMeetingTimestamp(allUsersWithTimestamp) {
 }
 
 class UserPrioritizer {
-  constructor() {
+  constructor(allUsers) {
+    this.allUsers = allUsers;
     this.dbWrapper = new DBWrapper();
-    this.dynamodb = new AWS.DynamoDB();
-    this.docClient = new AWS.DynamoDB.DocumentClient();
   }
 
-  async getUsersWithLastMeetingDate(allUsers, tier = 'prod') {
-    return Promise.all(allUsers.Items.map(async (user) => {
+  async getUsersWithLastMeetingDate(tier = 'dev') {
+    return Promise.all(this.allUsers.Items.map(async (user) => {
       const params = {
         ExpressionAttributeNames: {
           '#timestamp': 'timestamp',
@@ -66,15 +65,7 @@ class UserPrioritizer {
   }
 
   async getOrderedListOfUsers(tier = 'dev') {
-    const scanParams = {
-      ProjectionExpression: 'email, firstname, lastname',
-      TableName: TABLE.USERS[tier],
-    };
-
-    const allUsers = await this.dbWrapper.scan(scanParams);
-    console.log('allUsers = ', JSON.stringify(allUsers, null, 2));
-
-    const allUsersWithTimestamp = await this.getUsersWithLastMeetingDate(allUsers, tier);
+    const allUsersWithTimestamp = await this.getUsersWithLastMeetingDate(tier);
     console.log('allUsersWithTimestamp = ', JSON.stringify(allUsersWithTimestamp, null, 2));
 
     const allUsersortedByLastMeetingDate = getUsersSortedByLastMeetingTimestamp(

@@ -4,7 +4,6 @@ const delay = require('../src/utility');
 const UserPrioritizer = require('../src/userprioritizer');
 
 const dbWrapper = new DBWrapper();
-const userPrioritizer = new UserPrioritizer();
 
 beforeAll(async () => {
   const userTableParams = {
@@ -144,6 +143,15 @@ test('user with no previous meeting should be on top of priority list', async ()
   };
   await dbWrapper.batchWriteItem(batchWriteParamsForPutting);
 
+  const scanParams = {
+    ProjectionExpression: 'email, firstname, lastname',
+    TableName: TABLE.USERS.dev,
+  };
+
+  const allUsers = await dbWrapper.scan(scanParams);
+  console.log('allUsers = ', JSON.stringify(allUsers, null, 2));
+
+  const userPrioritizer = new UserPrioritizer(allUsers);
   const orderedUserList = await userPrioritizer.getOrderedListOfUsers('dev');
 
   expect(orderedUserList.length).toBe(3);
@@ -181,6 +189,15 @@ test('users should be prioritized in latemost last meeting order', async () => {
   };
   await dbWrapper.batchWriteItem(batchWriteParamsForPutting);
 
+  const scanParams = {
+    ProjectionExpression: 'email, firstname, lastname',
+    TableName: TABLE.USERS.dev,
+  };
+
+  const allUsers = await dbWrapper.scan(scanParams);
+  console.log('allUsers = ', JSON.stringify(allUsers, null, 2));
+
+  const userPrioritizer = new UserPrioritizer(allUsers);
   const orderedUserList = await userPrioritizer.getOrderedListOfUsers('dev');
 
   expect(orderedUserList.length).toBe(3);
