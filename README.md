@@ -1,3 +1,6 @@
+![branch parameter](https://github.com/SakibulMowla/catch-up/actions/workflows/node.js.yml/badge.svg?branch=main)
+
+
 # catch-up
 
 ## Prerequisite
