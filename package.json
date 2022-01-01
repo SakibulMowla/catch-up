@@ -23,7 +23,8 @@
   "homepage": "https://github.com/SakibulMowla/catch-up#readme",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.45.0",
-    "aws-sdk": "^2.1048.0"
+    "aws-sdk": "^2.1048.0",
+    "node-mailjet": "^3.3.4"
   },
   "devDependencies": {
     "eslint": "^8.5.0",
