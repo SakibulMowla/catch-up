@@ -119,26 +119,8 @@ test('users should be prioritized in latemost last meeting order', async () => {
   const batchWriteParamsForPutting = {
     RequestItems: {
       [TABLE.MEETINGS.dev]: [
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email1' },
-              email1: { S: 'masum.nayeem@gmail.com' },
-              email2: { S: 'sakibulmowla@gmail.com' },
-              timestamp: { S: dec22nd2021DateString },
-            },
-          },
-        },
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email1' },
-              email1: { S: 'sakibulmowla@gmail.com' },
-              email2: { S: 'biswajit.sust@gmail.com' },
-              timestamp: { S: dec11th2021DateString },
-            },
-          },
-        },
+        getMeetingsTablePutRequestItem('masum.nayeem@gmail.com', 'sakibulmowla@gmail.com', dec22nd2021DateString),
+        getMeetingsTablePutRequestItem('sakibulmowla@gmail.com', 'biswajit.sust@gmail.com', dec11th2021DateString),
       ],
     },
   };

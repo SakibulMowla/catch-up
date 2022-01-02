@@ -3,6 +3,7 @@ const Matcher = require('./matcher');
 const { TABLE } = require('./constants');
 const DBWrapper = require('./dbwrapper');
 const MailSender = require('./mailsender');
+const { getMeetingsTablePutRequestItem } = require('./utility');
 
 function createEmailToUserMap(allUsers) {
   const emailToUserMap = new Map();
@@ -39,26 +40,8 @@ class Organizer {
     const batchWriteParamsForPutting = {
       RequestItems: {
         [TABLE.MEETINGS[this.tier]]: [
-          {
-            PutRequest: {
-              Item: {
-                KEY: { S: 'email1' },
-                email1: { S: userA.email },
-                email2: { S: userB.email },
-                timestamp: { S: currentDatetimeString },
-              },
-            },
-          },
-          {
-            PutRequest: {
-              Item: {
-                KEY: { S: 'email1' },
-                email1: { S: userB.email },
-                email2: { S: userA.email },
-                timestamp: { S: currentDatetimeString },
-              },
-            },
-          },
+          getMeetingsTablePutRequestItem(userA.email, userB.email, currentDatetimeString),
+          getMeetingsTablePutRequestItem(userB.email, userA.email, currentDatetimeString),
         ],
       },
     };
