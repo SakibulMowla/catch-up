@@ -32,13 +32,13 @@ function getUsersSortedByLastMeetingTimestamp(allUsersWithTimestamp) {
 }
 
 class UserPrioritizer {
-  constructor(allUsers) {
-    this.allUsers = allUsers;
+  constructor(tier = 'dev') {
+    this.tier = tier;
     this.dbWrapper = new DBWrapper();
   }
 
-  async getUsersWithLastMeetingDate(tier = 'dev') {
-    return Promise.all(this.allUsers.Items.map(async (user) => {
+  async getUsersWithLastMeetingTimestamp(allUsers) {
+    return Promise.all(allUsers.Items.map(async (user) => {
       const params = {
         ExpressionAttributeNames: {
           '#timestamp': 'timestamp',
@@ -52,11 +52,11 @@ class UserPrioritizer {
         Limit: 1,
         ProjectionExpression: 'email1, #timestamp',
         ScanIndexForward: false,
-        TableName: TABLE.MEETINGS[tier],
+        TableName: TABLE.MEETINGS[this.tier],
       };
       const response = await this.dbWrapper.query(params);
       console.log('User = ', JSON.stringify(user, null, 2));
-      console.log('getUsersWithLastMeetingDate in map = ', JSON.stringify(response, null, 2));
+      console.log('getUsersWithLastMeetingTimestamp in map = ', JSON.stringify(response, null, 2));
 
       return {
         email: user.email,
@@ -65,8 +65,8 @@ class UserPrioritizer {
     }));
   }
 
-  async getOrderedListOfUsers(tier = 'dev') {
-    const allUsersWithTimestamp = await this.getUsersWithLastMeetingDate(tier);
+  async getOrderedListOfUsers(allUsers) {
+    const allUsersWithTimestamp = await this.getUsersWithLastMeetingTimestamp(allUsers);
     console.log('allUsersWithTimestamp = ', JSON.stringify(allUsersWithTimestamp, null, 2));
 
     const allUsersortedByLastMeetingDate = getUsersSortedByLastMeetingTimestamp(

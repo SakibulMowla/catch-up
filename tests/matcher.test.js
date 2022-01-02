@@ -173,8 +173,8 @@ test('user with latemost recent meeting should be priotitized', async () => {
   const allUsers = await dbWrapper.scan(scanParams);
   console.log('allUsers = ', JSON.stringify(allUsers, null, 2));
 
-  const userPrioritizer = new UserPrioritizer(allUsers);
-  const orderedUserList = await userPrioritizer.getOrderedListOfUsers('dev');
+  const userPrioritizer = new UserPrioritizer('dev');
+  const orderedUserList = await userPrioritizer.getOrderedListOfUsers(allUsers);
   const matcher = new Matcher('dev');
 
   const preferenceListOfSakibul = await matcher.getPreferenceList(

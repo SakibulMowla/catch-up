@@ -65,8 +65,8 @@ class Organizer {
   async organizeMeetings() {
     const allUsers = await this.getAllUsers();
     const emailToUserMap = createEmailToUserMap(allUsers);
-    const userPrioritizer = new UserPrioritizer(allUsers);
-    const orderedUserList = await userPrioritizer.getOrderedListOfUsers(this.tier);
+    const userPrioritizer = new UserPrioritizer(this.tier);
+    const orderedUserList = await userPrioritizer.getOrderedListOfUsers(allUsers);
     const matcher = new Matcher(this.tier);
     const matchedGroups = await matcher.getMatchedGroups(orderedUserList);
     const mailSender = new MailSender('dev');
