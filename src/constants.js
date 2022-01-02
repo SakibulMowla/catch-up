@@ -21,7 +21,7 @@ const TABLE = {
 
 module.exports = {
   ADMIN,
-  DB_SETUP_WAIT_TIME_MS: 5 * 1000,
+  DB_SETUP_WAIT_TIME_MS: 8 * 1000,
   DYNAMODB,
   JEST_DEFAULT_TIMEOUT_MS: 5000,
   MJ_API_URL: 'https://api.mailjet.com/v3.1/',
