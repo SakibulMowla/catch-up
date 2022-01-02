@@ -1,6 +1,6 @@
 const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS, TABLE } = require('../src/constants');
 const DBWrapper = require('../src/dbwrapper');
-const delay = require('../src/utility');
+const { delay, getMeetingsTablePutRequestItem, getUserTablePutRequestItem } = require('../src/utility');
 const Matcher = require('../src/matcher');
 const UserPrioritizer = require('../src/userprioritizer');
 
@@ -62,36 +62,9 @@ beforeAll(async () => {
   const batchWriteParams = {
     RequestItems: {
       [TABLE.USERS.dev]: [
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email' },
-              email: { S: 'sakibulmowla@gmail.com' },
-              firstname: { S: 'Sakibul' },
-              lastname: { S: 'Mowla' },
-            },
-          },
-        },
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email' },
-              email: { S: 'masum.nayeem@gmail.com' },
-              firstname: { S: 'Kazi' },
-              lastname: { S: 'Nayeem' },
-            },
-          },
-        },
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email' },
-              email: { S: 'biswajit.sust@gmail.com' },
-              firstname: { S: 'Biswajit' },
-              lastname: { S: 'Debnath' },
-            },
-          },
-        },
+        getUserTablePutRequestItem('sakibulmowla@gmail.com', 'Sakibul', 'Mowla'),
+        getUserTablePutRequestItem('masum.nayeem@gmail.com', 'Kazi', 'Nayeem'),
+        getUserTablePutRequestItem('biswajit.sust@gmail.com', 'Biswajit', 'Debnath'),
       ],
     },
   };
@@ -120,46 +93,10 @@ test('user with latemost recent meeting should be priotitized', async () => {
   const batchWriteParamsForPutting = {
     RequestItems: {
       [TABLE.MEETINGS.dev]: [
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email1' },
-              email1: { S: 'masum.nayeem@gmail.com' },
-              email2: { S: 'biswajit.sust@gmail.com' },
-              timestamp: { S: dec31st2021DateString },
-            },
-          },
-        },
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email1' },
-              email1: { S: 'biswajit.sust@gmail.com' },
-              email2: { S: 'masum.nayeem@gmail.com' },
-              timestamp: { S: dec31st2021DateString },
-            },
-          },
-        },
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email1' },
-              email1: { S: 'sakibulmowla@gmail.com' },
-              email2: { S: 'biswajit.sust@gmail.com' },
-              timestamp: { S: dec21st2021DateString },
-            },
-          },
-        },
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email1' },
-              email1: { S: 'biswajit.sust@gmail.com' },
-              email2: { S: 'sakibulmowla@gmail.com' },
-              timestamp: { S: dec21st2021DateString },
-            },
-          },
-        },
+        getMeetingsTablePutRequestItem('masum.nayeem@gmail.com', 'biswajit.sust@gmail.com', dec31st2021DateString),
+        getMeetingsTablePutRequestItem('biswajit.sust@gmail.com', 'masum.nayeem@gmail.com', dec31st2021DateString),
+        getMeetingsTablePutRequestItem('sakibulmowla@gmail.com', 'biswajit.sust@gmail.com', dec21st2021DateString),
+        getMeetingsTablePutRequestItem('biswajit.sust@gmail.com', 'sakibulmowla@gmail.com', dec21st2021DateString),
       ],
     },
   };
