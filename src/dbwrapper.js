@@ -13,33 +13,58 @@ class DBWrapper {
   }
 
   async createTable(params) {
-    const response = await this.dynamodb.createTable(params).promise();
-    console.log('createTable response = ', JSON.stringify(response, null, 2));
-    return response;
+    try {
+      const response = await this.dynamodb.createTable(params).promise();
+      console.log('createTable response = ', JSON.stringify(response, null, 2));
+      return response;
+    } catch (error) {
+      console.error(`Error in createTable. params = ${JSON.stringify(params, null, 2)}, error = ${error}`);
+      throw error;
+    }
   }
 
   async batchWriteItem(params) {
-    const response = await this.dynamodb.batchWriteItem(params).promise();
-    console.log('batchWriteItem response = ', JSON.stringify(response, null, 2));
-    return response;
+    try {
+      const response = await this.dynamodb.batchWriteItem(params).promise();
+      console.log('batchWriteItem response = ', JSON.stringify(response, null, 2));
+      return response;
+    } catch (error) {
+      console.error(`Error in batchWriteItem. params = ${JSON.stringify(params, null, 2)}, error = ${error}`);
+      throw error;
+    }
   }
 
   async scan(params) {
-    const response = await this.docClient.scan(params).promise();
-    console.log('scan response = ', JSON.stringify(response, null, 2));
-    return response;
+    try {
+      const response = await this.docClient.scan(params).promise();
+      console.log('scan response = ', JSON.stringify(response, null, 2));
+      return response;
+    } catch (error) {
+      console.error(`Error in scan. params = ${JSON.stringify(params, null, 2)}, error = ${error}`);
+      throw error;
+    }
   }
 
   async query(params) {
-    const response = await this.dynamodb.query(params).promise();
-    console.log('query response = ', JSON.stringify(response, null, 2));
-    return response;
+    try {
+      const response = await this.dynamodb.query(params).promise();
+      console.log('query response = ', JSON.stringify(response, null, 2));
+      return response;
+    } catch (error) {
+      console.error(`Error in query. params = ${JSON.stringify(params, null, 2)}, error = ${error}`);
+      throw error;
+    }
   }
 
   async deleteTable(params) {
-    const response = await this.dynamodb.deleteTable(params).promise();
-    console.log('deleteTable response = ', JSON.stringify(response, null, 2));
-    return response;
+    try {
+      const response = await this.dynamodb.deleteTable(params).promise();
+      console.log('deleteTable response = ', JSON.stringify(response, null, 2));
+      return response;
+    } catch (error) {
+      console.error(`Error in deleteTable. params = ${JSON.stringify(params, null, 2)}, error = ${error}`);
+      throw error;
+    }
   }
 }
 
