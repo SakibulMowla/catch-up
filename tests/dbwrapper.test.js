@@ -1,6 +1,6 @@
 const { JEST_DEFAULT_TIMEOUT_MS, DB_SETUP_WAIT_TIME_MS, TABLE } = require('../src/constants');
 const DBWrapper = require('../src/dbwrapper');
-const delay = require('../src/utility');
+const { delay, getUserTablePutRequestItem } = require('../src/utility');
 
 const dbWrapper = new DBWrapper();
 
@@ -30,26 +30,8 @@ test('put elements in devcatchupusers table', async () => {
   const batchWriteParams = {
     RequestItems: {
       [TABLE.USERS.dev]: [
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email' },
-              email: { S: 'sakibulmowla@gmail.com' },
-              firstname: { S: 'Sakibul' },
-              lastname: { S: 'Mowla' },
-            },
-          },
-        },
-        {
-          PutRequest: {
-            Item: {
-              KEY: { S: 'email' },
-              email: { S: 'masum.nayeem@gmail.com' },
-              firstname: { S: 'Kazi' },
-              lastname: { S: 'Nayeem' },
-            },
-          },
-        },
+        getUserTablePutRequestItem('sakibulmowla@gmail.com', 'Sakibul', 'Mowla'),
+        getUserTablePutRequestItem('masum.nayeem@gmail.com', 'Kazi', 'Nayeem'),
       ],
     },
   };
