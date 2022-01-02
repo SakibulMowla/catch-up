@@ -151,8 +151,8 @@ test('user with no previous meeting should be on top of priority list', async ()
   const allUsers = await dbWrapper.scan(scanParams);
   console.log('allUsers = ', JSON.stringify(allUsers, null, 2));
 
-  const userPrioritizer = new UserPrioritizer(allUsers);
-  const orderedUserList = await userPrioritizer.getOrderedListOfUsers('dev');
+  const userPrioritizer = new UserPrioritizer('dev');
+  const orderedUserList = await userPrioritizer.getOrderedListOfUsers(allUsers);
 
   expect(orderedUserList.length).toBe(3);
   expect(orderedUserList[0].email).toBe('masum.nayeem@gmail.com');
@@ -197,8 +197,8 @@ test('users should be prioritized in latemost last meeting order', async () => {
   const allUsers = await dbWrapper.scan(scanParams);
   console.log('allUsers = ', JSON.stringify(allUsers, null, 2));
 
-  const userPrioritizer = new UserPrioritizer(allUsers);
-  const orderedUserList = await userPrioritizer.getOrderedListOfUsers('dev');
+  const userPrioritizer = new UserPrioritizer('dev');
+  const orderedUserList = await userPrioritizer.getOrderedListOfUsers(allUsers);
 
   expect(orderedUserList.length).toBe(3);
   expect(orderedUserList[0].email).toBe('biswajit.sust@gmail.com');
