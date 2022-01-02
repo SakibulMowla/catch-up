@@ -75,14 +75,13 @@ class Organizer {
     matchedGroups.forEach(async (group) => {
       const userA = emailToUserMap.get(group[0]);
       const userB = emailToUserMap.get(group[1]);
-      console.log(`Trying to send email to: ${JSON.stringify(userA)} and ${JSON.stringify(userB, null, 2)}`);
       this.mailSender.sendMail(userA, userB)
         .then(async () => {
-          console.log('send successful');
+          console.log(`send successful for ${JSON.stringify(userA)} and ${JSON.stringify(userB)}`);
           return this.recordMeeting(userA, userB);
         })
         .catch(() => {
-          console.log('send failure');
+          console.error(`send failure for ${JSON.stringify(userA)} and ${JSON.stringify(userB)}`);
         });
     });
   }
