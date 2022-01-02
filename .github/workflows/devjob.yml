@@ -4,8 +4,8 @@
 name: devjob-in-main-branch
 
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  MJ_APIKEY_PRIVATE: ${{ secrets.MJ_APIKEY_PRIVATE }}
+  MJ_APIKEY_PUBLIC: ${{ secrets.MJ_APIKEY_PUBLIC }}
 
 on:
   # Allows you to run this workflow manually from the Actions tab
