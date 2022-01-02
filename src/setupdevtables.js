@@ -24,7 +24,11 @@ async function setupdevtables() {
     },
     TableName: TABLE.USERS.dev,
   };
-  await dbWrapper.createTable(userTableParams);
+  try {
+    await dbWrapper.createTable(userTableParams);
+  } catch (error) {
+    console.error('Error = ', error);
+  }
 
   const meetingTableParams = {
     AttributeDefinitions: [
@@ -52,7 +56,11 @@ async function setupdevtables() {
     },
     TableName: TABLE.MEETINGS.dev,
   };
-  await dbWrapper.createTable(meetingTableParams);
+  try {
+    await dbWrapper.createTable(meetingTableParams);
+  } catch (error) {
+    console.error('Error = ', error);
+  }
 
   // wait for db setup to finish
   await delay(DB_SETUP_WAIT_TIME_MS);
@@ -65,7 +73,11 @@ async function setupdevtables() {
       ],
     },
   };
-  await dbWrapper.batchWriteItem(batchWriteParams);
+  try {
+    await dbWrapper.batchWriteItem(batchWriteParams);
+  } catch (error) {
+    console.error('Error = ', error);
+  }
 }
 
 setupdevtables();
