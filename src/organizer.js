@@ -16,6 +16,9 @@ class Organizer {
   constructor(tier = 'dev') {
     this.tier = tier;
     this.dbWrapper = new DBWrapper();
+    this.userPrioritizer = new UserPrioritizer(this.tier);
+    this.matcher = new Matcher(this.tier);
+    this.mailSender = new MailSender(this.tier);
   }
 
   async getAllUsers() {
@@ -65,19 +68,15 @@ class Organizer {
   async organizeMeetings() {
     const allUsers = await this.getAllUsers();
     const emailToUserMap = createEmailToUserMap(allUsers);
-    const userPrioritizer = new UserPrioritizer(this.tier);
-    const orderedUserList = await userPrioritizer.getOrderedListOfUsers(allUsers);
-    const matcher = new Matcher(this.tier);
-    const matchedGroups = await matcher.getMatchedGroups(orderedUserList);
-    const mailSender = new MailSender('dev');
+    const orderedUserList = await this.userPrioritizer.getOrderedListOfUsers(allUsers);
+    const matchedGroups = await this.matcher.getMatchedGroups(orderedUserList);
 
     console.log('matchedGroups = ', JSON.stringify(matchedGroups, null, 2));
-    matchedGroups.forEach(async (group, index) => {
-      console.log('index = ', index, 'group = ', JSON.stringify(group));
+    matchedGroups.forEach(async (group) => {
       const userA = emailToUserMap.get(group[0]);
       const userB = emailToUserMap.get(group[1]);
       console.log(`Trying to send email to: ${JSON.stringify(userA)} and ${JSON.stringify(userB, null, 2)}`);
-      mailSender.sendMail(userA, userB)
+      this.mailSender.sendMail(userA, userB)
         .then(async () => {
           console.log('send successful');
           return this.recordMeeting(userA, userB);
