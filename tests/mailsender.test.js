@@ -6,8 +6,8 @@ test('email seding successful', async () => {
   const mockPostResponse = jest.fn(() => Promise.resolve({ body: successMessage }));
   axios.post.mockImplementation(mockPostResponse);
 
-  const mainSender = new MailSender('dev');
-  const response = await mainSender.sendMail(
+  const mailSender = new MailSender('dev');
+  const response = await mailSender.sendMail(
     {
       email: 'sakibulmowla@gmail.com',
       firstname: 'Sakibul',
@@ -27,9 +27,9 @@ test('axios is not called when userB is invalid', async () => {
   const mockPostResponse = jest.fn(() => {});
   axios.post.mockImplementation(mockPostResponse);
 
-  const mainSender = new MailSender('dev');
+  const mailSender = new MailSender('dev');
   try {
-    await mainSender.sendMail(
+    await mailSender.sendMail(
       {
         email: 'sakibulmowla@gmail.com',
         firstname: 'Sakibul',
