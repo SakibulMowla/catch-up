@@ -90,7 +90,7 @@ class Organizer {
 
 if (process.argv[2] && (process.argv[2] === 'dev' || process.argv[2] === 'prod')) {
   console.log(process.argv);
-  const organizer = new Organizer('dev');
+  const organizer = new Organizer(process.argv[2]);
   organizer.organizeMeetings();
 } else {
   console.error('Pass dev or prod as the command line argument as the tier where the script will run');
