@@ -1,10 +1,11 @@
 const AWS = require('aws-sdk');
 const { TABLE } = require('./constants');
 const DBWrapper = require('./dbwrapper');
+const { DYNAMODB } = require('./constants');
 
 AWS.config.update({
-  endpoint: 'https://dynamodb.us-west-2.amazonaws.com',
-  region: 'us-west-2',
+  endpoint: DYNAMODB.ENDPOINT,
+  region: DYNAMODB.REGION,
 });
 
 function getUsersSortedByLastMeetingTimestamp(allUsersWithTimestamp) {

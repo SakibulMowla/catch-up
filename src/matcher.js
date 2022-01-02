@@ -1,10 +1,10 @@
 const AWS = require('aws-sdk');
 const DBWrapper = require('./dbwrapper');
-const { TABLE } = require('./constants');
+const { DYNAMODB, TABLE } = require('./constants');
 
 AWS.config.update({
-  endpoint: 'https://dynamodb.us-west-2.amazonaws.com',
-  region: 'us-west-2',
+  endpoint: DYNAMODB.ENDPOINT,
+  region: DYNAMODB.REGION,
 });
 
 class Matcher {
