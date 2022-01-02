@@ -67,8 +67,8 @@ class Organizer {
     const emailToUserMap = createEmailToUserMap(allUsers);
     const userPrioritizer = new UserPrioritizer(allUsers);
     const orderedUserList = await userPrioritizer.getOrderedListOfUsers(this.tier);
-    const matcher = new Matcher(orderedUserList);
-    const matchedGroups = await matcher.getMatchedGroups(this.tier);
+    const matcher = new Matcher(this.tier);
+    const matchedGroups = await matcher.getMatchedGroups(orderedUserList);
     const mailSender = new MailSender('dev');
 
     console.log('matchedGroups = ', JSON.stringify(matchedGroups, null, 2));

@@ -175,7 +175,7 @@ test('user with latemost recent meeting should be priotitized', async () => {
 
   const userPrioritizer = new UserPrioritizer(allUsers);
   const orderedUserList = await userPrioritizer.getOrderedListOfUsers('dev');
-  const matcher = new Matcher(orderedUserList);
+  const matcher = new Matcher('dev');
 
   const preferenceListOfSakibul = await matcher.getPreferenceList(
     {
@@ -184,7 +184,7 @@ test('user with latemost recent meeting should be priotitized', async () => {
       lastname: 'Mowla',
       timestamp: dec21st2021DateString,
     },
-    'dev',
+    orderedUserList,
   );
   expect(preferenceListOfSakibul).toStrictEqual([
     'masum.nayeem@gmail.com',
@@ -198,14 +198,14 @@ test('user with latemost recent meeting should be priotitized', async () => {
       lastname: 'Debnath',
       timestamp: dec31st2021DateString,
     },
-    'dev',
+    orderedUserList,
   );
   expect(preferenceListOfBiswajit).toStrictEqual([
     'sakibulmowla@gmail.com',
     'masum.nayeem@gmail.com',
   ]);
 
-  const matchedGroups = await matcher.getMatchedGroups('dev');
+  const matchedGroups = await matcher.getMatchedGroups(orderedUserList);
   expect(matchedGroups).toStrictEqual([
     [
       'sakibulmowla@gmail.com',

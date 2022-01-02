@@ -8,14 +8,13 @@ AWS.config.update({
 });
 
 class Matcher {
-  constructor(orderedAllUserList) {
+  constructor(tier = 'dev') {
+    this.tier = tier;
     this.dbWrapper = new DBWrapper();
-    this.assignedUsers = new Set();
-    this.orderedAllUserList = orderedAllUserList;
-    this.totalUsers = this.orderedAllUserList.length;
   }
 
-  async getPreferenceList(user, tier = 'dev') {
+  async getPreferenceList(user, orderedAllUserList) {
+    const totalUsers = orderedAllUserList.length;
     const params = {
       ExpressionAttributeNames: {
         '#timestamp': 'timestamp',
@@ -26,10 +25,10 @@ class Matcher {
         },
       },
       KeyConditionExpression: 'email1 = :email1',
-      Limit: this.totalUsers - 1,
+      Limit: totalUsers - 1,
       ProjectionExpression: 'email2, #timestamp',
       ScanIndexForward: false,
-      TableName: TABLE.MEETINGS[tier],
+      TableName: TABLE.MEETINGS[this.tier],
     };
 
     const response = await this.dbWrapper.query(params);
@@ -46,7 +45,7 @@ class Matcher {
       preferenceSet.add(element.email2.S);
     });
 
-    this.orderedAllUserList.forEach((element) => {
+    orderedAllUserList.forEach((element) => {
       if (!preferenceSet.has(element.email) && element.email !== user.email) {
         preferenceList.unshift(element.email);
       }
@@ -57,28 +56,29 @@ class Matcher {
     return preferenceList;
   }
 
-  async getMatchedGroups(tier = 'dev') {
+  async getMatchedGroups(orderedAllUserList) {
+    const assignedUsers = new Set();
     const matchedGroups = [];
     // 1. for...of is needed here to send the getPreferenceList calls in sequence
     // 2. using map makes it parallel and doesn't preserve the order of the list
     // 3. forEach can't be used when await is inside
     // eslint-disable-next-line no-restricted-syntax
-    for (const userA of this.orderedAllUserList) {
-      if (this.assignedUsers.has(userA.email)) {
+    for (const userA of orderedAllUserList) {
+      if (assignedUsers.has(userA.email)) {
         break;
       }
 
       // eslint-disable-next-line no-await-in-loop
-      const preferenceList = await this.getPreferenceList(userA, tier);
-      const userBemail = preferenceList.find((email) => !this.assignedUsers.has(email));
+      const preferenceList = await this.getPreferenceList(userA, orderedAllUserList);
+      const userBemail = preferenceList.find((email) => !assignedUsers.has(email));
       console.log('userA = ', JSON.stringify(userA, null, 2));
       console.log('userBemail = ', userBemail);
       if (userBemail) {
         console.log('userA.email = ', userA.email);
         console.log('userBemail = ', userBemail);
         matchedGroups.push([userA.email, userBemail]);
-        this.assignedUsers.add(userA.email);
-        this.assignedUsers.add(userBemail);
+        assignedUsers.add(userA.email);
+        assignedUsers.add(userBemail);
       }
     }
 
