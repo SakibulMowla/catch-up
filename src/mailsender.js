@@ -1,6 +1,6 @@
 const fs = require('fs');
 const axios = require('axios');
-const { ADMIN } = require('./constants');
+const { ADMIN, MJ_API_URL } = require('./constants');
 
 class MailSender {
   constructor(tier = 'dev') {
@@ -48,7 +48,7 @@ class MailSender {
         password: process.env.MJ_APIKEY_PRIVATE,
         username: process.env.MJ_APIKEY_PUBLIC,
       },
-      baseURL: 'https://api.mailjet.com/v3.1/',
+      baseURL: MJ_API_URL,
     });
     return request;
   }
