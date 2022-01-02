@@ -31,12 +31,12 @@ class Matcher {
       TableName: TABLE.MEETINGS[this.tier],
     };
 
-    const response = await this.dbWrapper.query(params);
-    console.log('getPreferenceList response = ', JSON.stringify(response, null, 2));
+    const userLatestMeetings = await this.dbWrapper.query(params);
+    console.log('getPreferenceList userLatestMeetings = ', JSON.stringify(userLatestMeetings, null, 2));
 
     const preferenceList = [];
     const preferenceSet = new Set();
-    response.Items.forEach((element) => {
+    userLatestMeetings.Items.forEach((element) => {
       if (preferenceSet.has(element.email2.S)) {
         return;
       }
@@ -51,7 +51,7 @@ class Matcher {
       }
     });
 
-    console.log('preferenceList response = ', JSON.stringify(preferenceList, null, 2));
+    console.log('user = ', user, ', preferenceList = ', JSON.stringify(preferenceList, null, 2));
 
     return preferenceList;
   }
