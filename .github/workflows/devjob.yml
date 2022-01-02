@@ -31,4 +31,4 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: node src/setupdevtables.js 
-    - run: node src/mailsender.js dev
+    - run: node src/organizer.js dev
