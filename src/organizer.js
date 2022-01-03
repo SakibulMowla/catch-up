@@ -65,7 +65,7 @@ class Organizer {
         })
         .catch((error) => {
           if (error && error.response && error.response.data) {
-            let err = error.response.data;
+            const err = error.response.data;
             console.error(`Reason = StatusCode: ${err.StatusCode}, ErrorMessage: ${err.ErrorMessage}`);
           } else {
             console.error('Reason = ', error);
