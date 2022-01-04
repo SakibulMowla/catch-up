@@ -63,7 +63,13 @@ class Organizer {
           console.log(`send successful for ${JSON.stringify(userA)} and ${JSON.stringify(userB)}`);
           return this.recordMeeting(userA, userB);
         })
-        .catch(() => {
+        .catch((error) => {
+          if (error?.response?.data) {
+            const { StatusCode, ErrorMessage } = error.response.data;
+            console.error(`Reason = StatusCode: ${StatusCode}, ErrorMessage: ${ErrorMessage}`);
+          } else {
+            console.error('Reason = ', error);
+          }
           console.error(`send failure for ${JSON.stringify(userA)} and ${JSON.stringify(userB)}`);
         });
     });
