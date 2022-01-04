@@ -64,7 +64,7 @@ class Organizer {
           return this.recordMeeting(userA, userB);
         })
         .catch((error) => {
-          if (error && error.response && error.response.data) {
+          if (error?.response?.data) {
             const { StatusCode, ErrorMessage } = error.response.data;
             console.error(`Reason = StatusCode: ${StatusCode}, ErrorMessage: ${ErrorMessage}`);
           } else {
