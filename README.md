@@ -12,7 +12,7 @@
 
 - Clone the repo
 - `npm install`
-- Setup the aws credentials as environment variables
+- Setup required credentials as environment variables
 
 ## Running test
 
@@ -23,3 +23,11 @@
 
 - check lint error: `npm run lint`
 - autofix lint error: `npm run lint-fix`
+
+## Reference
+
+- [Getting Started with Node.js and DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.html)
+- [Amazon DynamoDB API reference](https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Operations_Amazon_DynamoDB.html)
+- [Jest Docs](https://jestjs.io/docs/getting-started)
+- [Mailjet NodeJs Wrapper (not currently used)](https://github.com/mailjet/mailjet-apiv3-nodejs)
+- [Mailjet REST API through Axios](https://github.com/mailjet/mailjet-apiv3-nodejs/issues/175#issuecomment-981596335)
