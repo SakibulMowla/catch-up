@@ -34,14 +34,12 @@ class Organizer {
     return allUsers;
   }
 
-  async recordMeeting(userA, userB) {
-    const currentDatetimeString = new Date().toISOString();
-
+  async recordMeeting(userA, userB, generationDatetimeString) {
     const batchWriteParamsForPutting = {
       RequestItems: {
         [TABLE.MEETINGS[this.tier]]: [
-          getMeetingsTablePutRequestItem(userA.email, userB.email, currentDatetimeString),
-          getMeetingsTablePutRequestItem(userB.email, userA.email, currentDatetimeString),
+          getMeetingsTablePutRequestItem(userA.email, userB.email, generationDatetimeString),
+          getMeetingsTablePutRequestItem(userB.email, userA.email, generationDatetimeString),
         ],
       },
     };
@@ -49,6 +47,7 @@ class Organizer {
   }
 
   async organizeMeetings() {
+    const generationDatetimeString = new Date().toISOString();
     const allUsers = await this.getAllUsers();
     const emailToUserMap = createEmailToUserMap(allUsers);
     const orderedUserList = await this.userPrioritizer.getOrderedListOfUsers(allUsers);
@@ -61,7 +60,7 @@ class Organizer {
       this.mailSender.sendMail(userA, userB)
         .then(async () => {
           console.log(`send successful for ${JSON.stringify(userA)} and ${JSON.stringify(userB)}`);
-          return this.recordMeeting(userA, userB);
+          return this.recordMeeting(userA, userB, generationDatetimeString);
         })
         .catch((error) => {
           if (error?.response?.data) {
